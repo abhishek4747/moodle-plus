@@ -90,3 +90,105 @@ auth.settings.reset_password_requires_verification = True
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+from datetime import datetime
+
+db.define_table(
+    'users',
+    Field('first_name', length=128, default=''),
+    Field('last_name', length=128, default=''),
+    Field('email', length=128, unique=True),
+    Field('username', length=100, unique=True), #cs5110272
+    Field('entry_no', length=100, unique=True), #2011CS50272
+    Field('type_','integer'), # 0 for student, 1 for professor
+    Field('password', 'password', length=512, readable=False, label='Password'),
+    Field('registration_key', length=512, writable=False, readable=False, default=''),
+    Field('reset_password_key', length=512, writable=False, readable=False, default=''),
+    Field('registration_id', length=512, writable=False, readable=False, default=''),
+ )
+
+
+custom_auth_table = db['users']
+
+auth.settings.table_user = custom_auth_table
+auth.settings.table_user_name = 'users'    #Very important to mention
+auth.settings.table_group_name = 'user_group'
+auth.settings.table_membership_name = 'user_membership'
+auth.settings.table_permission_name = 'user_permission'
+auth.settings.table_event_name = 'user_event'
+auth.settings.login_userfield = 'username'        #the loginfield will be username
+auth.define_tables(username=False)    #Creating the table
+
+
+
+db.define_table(
+    'static_vars',
+    Field('name','string'),
+    Field('int_value','integer'),
+    Field('string_value','string'),
+)
+
+db.define_table(
+    'user_vars',
+    Field('user_id',db.users),
+    Field('name','string'),
+    Field('int_value','integer'),
+    Field('string_value','string'),
+)
+
+db.define_table(
+    'courses',
+    Field('name','string'),
+    Field('description','string'),
+    Field('credits','integer'),
+    Field('l_t_p','string'), # 3-0-1
+    # Field('prerequisite',)
+)
+
+db.define_table(
+    'registered_courses',
+    Field('coures_id',db.courses),
+    Field('professor',db.users),
+    Field('year_','integer'),
+    Field('semester','integer'), # 0,1,2 summer, break, fall
+)
+
+db.define_table(
+    'student_registrations',
+    Field('student_id',db.users),
+    Field('registered_course_id',db.registered_courses),
+)
+
+db.define_table(
+    'ta_registrations',
+    Field('user_id', db.users),
+    Field('registered_course_id',db.registered_courses),
+)
+
+db.define_table(
+    'threads',
+    Field('registered_course_id',db.registered_courses),
+    Field('user_id', db.users),
+    Field('created_at','datetime',default=datetime.now),
+    Field('post', 'string')
+)
+
+db.define_table(
+    'events',
+    Field('registered_course_id',db.registered_courses),
+    Field('type_','integer'),
+    Field('name','string'),
+    Field('description','string'),
+    Field('created_at','datetime',default=datetime.now),
+    Field('deadline','datetime',default=datetime.now),
+    Field('late_days_allowed','integer'),
+)
+
+db.define_table(
+    'grades',
+    Field('registered_course_id',db.registered_courses),
+    Field('user_id', db.users),
+    Field('score','double'),
+    Field('out_of','double'),
+    Field('weightage','double'),
+)
