@@ -3,4 +3,5 @@
 applications/MoodlePlus/errors/
 applications/MoodlePlus/databases/
 applications/MoodlePlus/sessions/
+applications/admin/sessions/
 
