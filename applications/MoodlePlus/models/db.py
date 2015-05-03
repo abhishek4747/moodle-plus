@@ -139,15 +139,16 @@ db.define_table(
 db.define_table(
     'courses',
     Field('name','string'),
+    Field('code','string'),
     Field('description','string'),
     Field('credits','integer'),
     Field('l_t_p','string'), # 3-0-1
     # Field('prerequisite',)
-)
+migrate=True)
 
 db.define_table(
     'registered_courses',
-    Field('coures_id',db.courses),
+    Field('course_id',db.courses),
     Field('professor',db.users),
     Field('year_','integer'),
     Field('semester','integer'), # 0,1,2 summer, break, fall
