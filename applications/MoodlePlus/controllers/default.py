@@ -75,3 +75,8 @@ def api():
         return db(db[table_name]._id==record_id).delete()
     return dict(GET=GET, POST=POST, PUT=PUT, DELETE=DELETE)
 
+def login():
+    userid = request.vars.userid
+    password = request.vars.password
+    user = auth.login_bare(userid,password)
+    return dict(success=False if not user else True, user=user)

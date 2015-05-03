@@ -24,8 +24,11 @@ response.google_analytics_id = None
 ## this is the main application menu add/remove items as required
 #########################################################################
 
+sems = ["summer", "break", "winter"]
+
 response.menu = [
-    (T('Home'), False, URL('default', 'index'), [])
+    (T('Home'), False, URL('default', 'index'), []),
+    (T('My Course'), False, URL('courses', 'index'), []),
 ]
 
 DEVELOPMENT_MENU = False

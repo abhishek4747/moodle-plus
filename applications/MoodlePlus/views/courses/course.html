@@ -1,3 +1,79 @@
 {{extend 'layout.html'}}
-{{=BEAUTIFY(response._vars)}}
-	
+{{#=BEAUTIFY(response._vars)}}
+{{=H1(course.code.upper() +": " + course.name.title(), _class="course_title") }}
+{{=SPAN(course.description,_class="course_description")}}
+{{request_args = request.args}}
+{{if len(request_args)< 2:}}
+	{{request_args.append("")}}
+{{pass}}
+{{request.args1 = list(request_args)}}
+{{request.args1[1]="overview"}}
+{{request.args2 = list(request_args)}}
+{{request.args2[1]="assignments"}}
+{{request.args3 = list(request_args)}}
+{{request.args3[1]="resources"}}
+{{request.args4 = list(request_args)}}
+{{request.args4[1]="grades"}}
+<ul class="nav nav-tabs nav-justified">	
+  <li role="presentation" class={{="active" if tab=="overview" else ""}}><a href="{{=URL('courses','course',args=request.args1)}}">Overview</a></li>
+  <li role="presentation" class={{="active" if tab=="assignments" else ""}}><a href="{{=URL('courses','course',args=request.args2)}}">Assignments</a></li>
+  <li role="presentation" class={{="active" if tab=="resources" else ""}}><a href="{{=URL('courses','course',args=request.args3)}}">Resources</a></li>
+  <li role="presentation" class={{="active" if tab=="grades" else ""}}><a href="{{=URL('courses','course',args=request.args4)}}">Grades</a></li>
+</ul>
+<br>
+{{if registered:}}
+	<!-- Assignements -->
+	{{if tab=="assignments":}}
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Name</td>
+						<td>Time Remaining</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{for i,assignment in enumerate(assignments):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td><a href="{{=URL('assignment',args=[assignment.id])}}">{{=assignment.name.title()}}</a></td>
+						<td>{{=assignment.deadline - datetime.now()}}</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
+
+	<!-- Resources -->
+	{{elif tab=="resources":}}
+
+	<!-- Grades -->
+	{{elif tab=="grades":}}
+
+	<!-- Overview -->
+	{{else:}}
+		<!-- Overview -->
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<tbody>
+				{{current_week = registered.starting_date}}
+				{{week_no = 1}}
+				{{while current_week < registered.ending_date - timedelta(days=-7):}}
+					<tr>
+						<td>
+						{{next_week = current_week - timedelta(days=-7)}}
+						{{=H3("Week "+str(week_no)+": ")}}
+						{{=H5(str(current_week.date())+" to "+str(current_week.date()))}}
+						{{current_week=next_week}}
+						{{week_no = week_no + 1}}
+						</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
+
+	{{pass}}
+
+{{pass}}

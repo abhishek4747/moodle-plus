@@ -30,7 +30,7 @@ else:
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
-response.generic_patterns = ['*'] if request.is_local else []
+response.generic_patterns = ['*'] # if request.is_local else []
 ## choose a style for forms
 response.formstyle = myconf.take('forms.formstyle')  # or 'bootstrap3_stacked' or 'bootstrap2' or other
 response.form_label_separator = myconf.take('forms.separator')
@@ -91,7 +91,7 @@ auth.settings.reset_password_requires_verification = True
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
 
-from datetime import datetime
+from datetime import datetime,timedelta
 
 db.define_table(
     'users',
@@ -152,7 +152,9 @@ db.define_table(
     Field('professor',db.users),
     Field('year_','integer'),
     Field('semester','integer'), # 0,1,2 summer, break, fall
-)
+    Field('starting_date','datetime'),
+    Field('ending_date','datetime'),
+migrate=True)
 
 db.define_table(
     'student_registrations',
@@ -176,14 +178,15 @@ db.define_table(
 
 db.define_table(
     'events',
-    Field('registered_course_id',db.registered_courses),
-    Field('type_','integer'),
+    Field('registered_course_id', db.registered_courses),
+    Field('type_','integer'), # 0 assignment, 1 announcement
     Field('name','string'),
     Field('description','string'),
     Field('created_at','datetime',default=datetime.now),
-    Field('deadline','datetime',default=datetime.now),
+    Field('deadline','datetime'),
     Field('late_days_allowed','integer'),
-)
+    Field('file_','upload'),
+migrate=True)
 
 db.define_table(
     'grades',
@@ -192,4 +195,21 @@ db.define_table(
     Field('score','double'),
     Field('out_of','double'),
     Field('weightage','double'),
+)
+
+db.define_table(
+    'resources',
+    Field('registered_course_id',db.registered_courses),
+    Field('name','string'),
+    Field('file_','upload'),
+    Field('created_at','datetime',default=datetime.now),
+)
+
+db.define_table(
+    'submissions',
+    Field('user_id',db.users),
+    Field('event_id', db.events),
+    Field('name', 'string'),
+    Field('file_', 'upload'),
+    Field('created_at','datetime',default=datetime.now)
 )
