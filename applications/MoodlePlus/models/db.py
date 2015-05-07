@@ -15,12 +15,13 @@ from gluon.contrib.appconfig import AppConfig
 myconf = AppConfig(reload=True)
 
 
+
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'])
+    db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int), check_reserved=['all'], migrate=True)
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
-    db = DAL('google:datastore+ndb')
+    db = DAL('google:datastore+ndb', migrate=True)
     ## store sessions and tickets there
     session.connect(request, response, db=db)
     ## or store session in Memcache, Redis, etc.
@@ -123,7 +124,7 @@ auth.define_tables(username=False)    #Creating the table
 
 db.define_table(
     'static_vars',
-    Field('name','string'),
+    Field('name','string', unique=True),
     Field('int_value','integer'),
     Field('string_value','string'),
 )
@@ -134,6 +135,7 @@ db.define_table(
     Field('name','string'),
     Field('int_value','integer'),
     Field('string_value','string'),
+    primarykey=['user_id','name'],
 )
 
 db.define_table(
@@ -143,8 +145,7 @@ db.define_table(
     Field('description','string'),
     Field('credits','integer'),
     Field('l_t_p','string'), # 3-0-1
-    # Field('prerequisite',)
-migrate=True)
+)
 
 db.define_table(
     'registered_courses',
@@ -154,7 +155,7 @@ db.define_table(
     Field('semester','integer'), # 0,1,2 summer, break, fall
     Field('starting_date','datetime'),
     Field('ending_date','datetime'),
-migrate=True)
+)
 
 db.define_table(
     'student_registrations',
@@ -178,7 +179,7 @@ db.define_table(
     Field('deadline','datetime'),
     Field('late_days_allowed','integer'),
     Field('file_','upload'),
-migrate=True)
+)
 
 db.define_table(
     'grades',
@@ -214,7 +215,7 @@ db.define_table(
     Field('updated_at', 'datetime', default=datetime.now),
     Field('title','string'),
     Field('description', 'string'),
-migrate=True)
+)
 
 db.define_table(
     'comments',

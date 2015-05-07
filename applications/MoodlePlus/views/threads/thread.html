@@ -240,13 +240,16 @@
 
 <script type="text/javascript">
 var thread_id = {{=thread.id}};
-var comments = {{from gluon.serializers import json}}{{=XML(json(comments))}};
+{{from gluon.serializers import json}}
+var comments = {{=XML(json(comments))}};
+var comment_users = {{=XML(json(comment_users))}};
+var times_readable = {{=XML(json(times_readable))}};
 function post_comment(){
 	$.ajax({
 		url:"/threads/post_comment.json?thread_id="+thread_id+"&description="+$('#comment_text').val(),
 		success:function(data){
 			if (data.success){
-				add_comment(data.comment);
+				add_comment(data.comment, data.user_name, data.time_readable);
 				$('.panel-google-plus').toggleClass('panel-google-plus-show-comment');
 			}
 			else
@@ -259,14 +262,14 @@ function post_comment(){
 	});
 }
 
-function add_comment(comment){
+function add_comment(comment, username, time_readable){
 	// $('#thread_comments').append($('div.thread_comment').html(comment.description));
 	$('<div/>', {
 	    id: 'thread_comment',
 	    html: '<img class="[ img-circle pull-left ]" src="https://lh3.googleusercontent.com/-9jq67xn4-iw/AAAAAAAAAAI/AAAAAAAAAAA/t6TiloMKW04/photo.jpg" width="30" alt="Mouse0270" />\
-	    <span style="padding:5px"><a href="/users/user/'+comment.user_id+'">User</a></span>\
+	    <span style="padding:5px"><a href="/users/user/'+comment.user_id+'">'+username+'</a></span>\
 	    <span>'+comment.description+'</span><br>\
-	    <sub>Created at - '+comment.created_at+'</sub>\
+	    <sub>'+time_readable+'</sub>\
 	    '
 	}).appendTo('#thread_comments');
 
@@ -274,7 +277,7 @@ function add_comment(comment){
 function render_comments(){
 	$('#thread_comments').html('');
 	for (var i = 0; i < comments.length; i++) {
-   		add_comment(comments[i]);
+   		add_comment(comments[i], comment_users[i].first_name+" "+comment_users[i].last_name, times_readable[i]);
    	}
 }
 

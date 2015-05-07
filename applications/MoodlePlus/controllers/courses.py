@@ -5,6 +5,7 @@ def list():
 	if auth.is_logged_in():
 		return courses_list()
 	else:
+		return dict()
 		return dict(courses=db(db.courses.id>0).select())
 
 def course():
@@ -33,8 +34,8 @@ def course():
 
 	previous = db((db.registered_courses.course_id==course.id)&(~((db.registered_courses.year_==year)&(db.registered_courses.semester==sem)))).select()
 	registered = db(db.registered_courses.course_id==course.id)(db.registered_courses.year_==year)(db.registered_courses.semester==sem).select()
-	assignments = None
-	course_threads = None
+	assignments = []
+	course_threads = []
 	if len(registered)>0:
 		registered = registered.first()
 		if tab=="assignments":
@@ -56,6 +57,7 @@ def link():
 
 def delete():
 	db(db.submissions.file_==request.args[0]).delete()
+	session.flash = "Submission deleted successfully!!"
 	if request.env.http_referer:
 		redirect(request.env.http_referer)
 	else:
@@ -77,6 +79,7 @@ def assignment():
 	registered = db(db.registered_courses.id==assignment.registered_course_id).select().first()
 	course = db(db.courses.id==registered.course_id).select().first()
 	submissions = []
+	
 	if auth.is_logged_in():
 		sub_form = FORM(
 			INPUT(_name="sub_name", _type="text"),
@@ -85,6 +88,8 @@ def assignment():
 		if sub_form.accepts(request.vars, formname='sub_form') and sub_form.vars.sub_name.strip()!="":
 			sub = db.submissions.file_.store(sub_form.vars.sub_file.file, sub_form.vars.sub_file.filename)
 			id = db.submissions.insert(file_=sub,name=sub_form.vars.sub_name,event_id=aid, user_id=auth.user_id)
+			if id>0:
+				response.flash = "Submission Successful!"
 		
 		submissions = db(db.submissions.user_id==auth.user.id)(db.submissions.event_id==aid).select()
 

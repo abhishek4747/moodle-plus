@@ -20,6 +20,12 @@ def index():
     return dict(message=T('Welcome to web2py!'))
 
 
+def logged_in():
+    return dict(success=auth.is_logged_in())
+
+def logout():
+    return dict(success=True, loggedout=auth.logout())
+
 def user():
     """
     exposes:
