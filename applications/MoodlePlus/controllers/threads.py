@@ -23,4 +23,36 @@ def thread():
 	except Exception, e:
 		raise e
 	thread = db(db.threads.id==tid).select().first()
-	return dict(thread=thread)
+	course = db(db.courses.id==thread.registered_course_id.course_id).select().first()
+	comments = get_comments(tid)
+	return dict(thread=thread, comments=comments, course=course)
+
+def get_comments(thread_id):
+	comments = db(db.comments.thread_id==thread_id).select()
+	return comments
+
+def comments():
+	try:
+		tid = int(request.vars["thread_id"])
+	except Exception, e:
+		raise e
+	return dict(comments=get_comments(tid))
+
+@auth.requires_login()
+def post_comment():
+	if "description" not in request.vars:
+		raise HTTP(404)
+	try:
+		tid = int(request.vars["thread_id"])
+	except Exception, e:
+		raise e
+
+	try:
+		description = str(request.vars["description"]).strip()	
+	except Exception, e:
+		raise e
+	if db(db.threads.id==tid).count()<1:
+		return dict(success=False, err_msg="Invalid Thread Id")
+	comment_id = db.comments.insert(thread_id=tid, user_id=auth.user.id, description=description)
+	return dict(success=True, comment=db(db.comments.id==comment_id).select().first())
+
