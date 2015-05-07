@@ -185,6 +185,7 @@ db.define_table(
     'grades',
     Field('registered_course_id',db.registered_courses),
     Field('user_id', db.users),
+    Field('name','string'),
     Field('score','double'),
     Field('out_of','double'),
     Field('weightage','double'),

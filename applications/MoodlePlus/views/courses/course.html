@@ -28,6 +28,7 @@
 	<!-- Assignements -->
 	{{if tab=="assignments":}}
 		<div class="table-responsive">
+		{{if len(assignments)>0:}}
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -46,6 +47,9 @@
 				{{pass}}
 				</tbody>
 			</table>
+		{{else:}}
+			<h3>No Assignments. Yay!!</h3>
+		{{pass}}
 		</div>
 
 	<!-- Resources -->
@@ -53,23 +57,62 @@
 
 	<!-- Grades -->
 	{{elif tab=="grades":}}
-
+		<div class="table-responsive">
+		{{if len(grades)>0:}}
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Grade Item</td>
+						<td>Score</td>
+						<td>Weight</td>
+						<td>Absolute Marks</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{sc = 0}}
+				{{we = 0}}
+				{{tot = 0}}
+				{{for i,grade in enumerate(grades):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td>{{=grade.name.title()}}</td>
+						<td>{{=grade.score}}&nbsp;/&nbsp;{{=grade.out_of}}</td>
+						<td>{{=grade.weightage}}</td>
+						{{ab=round((grade.score/grade.out_of)*grade.weightage,2)}}
+						<td>{{=ab}}</td>
+					</tr>
+					{{we+=grade.weightage}}
+					{{sc+=ab}}
+				{{pass}}
+				<tr>
+					<td>--</td>
+					<td><strong>Total so far</strong></td>
+					<td><strong>{{=sc}}&nbsp;/&nbsp;{{=we}}</strong></td>
+					<td><strong>{{=we}}</strong></td>
+					<td><strong>{{=sc}}</strong></td>
+					</tr>
+				</tbody>
+			</table>
+		{{else:}}
+			<h3>No Grades awarded Yet!</h3>
+		{{pass}}
+		</div>
 	<!-- Threads -->
 	{{elif tab=="threads":}}
 		<div id="new_thread">
 			<h3>Post a new thread</h3>
-			<input class="form-control" id="new_thread_title" type="text" placeholder="Title">
-			<textarea class="form-control" id="new_thread_description" rows=4 placeholder="Description"></textarea>
-			<div class="btn btn-primary" onclick="post_new_thread();">Submit</div>
+			<input class="form-control" id="new_thread_title" type="text" placeholder="Title" tabindex="1">
+			<textarea class="form-control" id="new_thread_description" rows=4 placeholder="Description" tabindex="2"></textarea>
+			<button class="btn btn-primary" onclick="post_new_thread();" tabindex="3">Submit</button>
 		</div>
 		<script type="text/javascript">
 		function post_new_thread(){
-			if ($('new_thread_description').val().trim()!='' && $('#new_thread_title').val().trim()!=''){
+			if ($('#new_thread_description').val().trim()!='' && $('#new_thread_title').val().trim()!=''){
 				$.ajax({
-					url:'/threads/new.json?course_code={{=course.code}}&description='+$('new_thread_description').val()+"&title="+$('#new_thread_title').val(),
+					url:'/threads/new.json?course_code={{=course.code}}&description='+$('#new_thread_description').val()+"&title="+$('#new_thread_title').val(),
 					success:function(data){
-						console.log(data);
-						$('#new_thread').toggle();
+						location.href=location.href;
 					},
 					error:function(){
 						alert("Couldn't post new thread.");
@@ -78,6 +121,7 @@
 			}
 		}
 		</script>
+		{{if len(course_threads)>0:}}
 		<div class="table-responsive">
 			<table class="table table-striped">
 				<thead>
@@ -98,6 +142,7 @@
 				</tbody>
 			</table>
 		</div>
+		{{pass}}
 	<!-- Overview -->
 	{{else:}}
 		<!-- Overview -->

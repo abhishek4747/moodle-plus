@@ -86,3 +86,27 @@ def login():
     password = request.vars.password
     user = auth.login_bare(userid,password)
     return dict(success=False if not user else True, user=user)
+
+
+def api():
+    return """
+Moodle Plus API (ver 1.0)
+-------------------------
+
+Url: /default/login.json
+Input params:
+    userid: (string)
+    password: (string)
+Output params:
+    success: (boolean) True if login success and False otherwise
+    user: (json) User details if login is successful otherwise False
+
+
+Url: /default/logout.json
+Input params:
+Output params:
+    success: (boolean) True if logout successful and False otherwise
+
+
+
+    """

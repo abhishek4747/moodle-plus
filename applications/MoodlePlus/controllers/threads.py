@@ -17,6 +17,18 @@ def new():
 				return dict(success=True, thread_id=tid)
 	return dict(success=False)
 
+def delete():
+	thread = db(db.threads.id==request.args[0]).select()
+	if len(thread)>0:
+		thread = thread.first()
+		session.flash = "Thread deleted successfully!!"
+		db(db.threads.id==request.args[0]).delete()
+		redirect(URL('courses','course',args=[db(db.courses.id==thread.registered_course_id.course_id).select().first().code,'threads']))
+	if request.env.http_referer:
+		redirect(request.env.http_referer)
+	else:
+		redirect('/')
+
 @auth.requires_login()
 def thread():
 	try:

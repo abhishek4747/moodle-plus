@@ -36,18 +36,21 @@ def course():
 	registered = db(db.registered_courses.course_id==course.id)(db.registered_courses.year_==year)(db.registered_courses.semester==sem).select()
 	assignments = []
 	course_threads = []
+	grades = []
 	if len(registered)>0:
 		registered = registered.first()
+		reg_course = registeredForCourse(course_code)
 		if tab=="assignments":
 			assignments = db(db.events.registered_course_id==registered.id)(db.events.type_==0).select()
 		elif tab=="threads":
-			reg_course = registeredForCourse(course_code)
 			course_threads = db(db.threads.registered_course_id==reg_course).select()
+		elif tab=="grades":
+			grades = db(db.grades.registered_course_id==reg_course)(db.grades.user_id==auth.user.id).select()
 	else:
 		registered = None
 
 
-	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments, course_threads=course_threads)
+	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments, course_threads=course_threads, grades=grades)
 
 def download(): 
 	return response.download(request,db)
