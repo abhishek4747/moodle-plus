@@ -13,12 +13,15 @@
 {{request.args3 = list(request_args)}}
 {{request.args3[1]="resources"}}
 {{request.args4 = list(request_args)}}
-{{request.args4[1]="grades"}}
+{{request.args4[1]="threads"}}
+{{request.args5 = list(request_args)}}
+{{request.args5[1]="grades"}}
 <ul class="nav nav-tabs nav-justified">	
   <li role="presentation" class={{="active" if tab=="overview" else ""}}><a href="{{=URL('courses','course',args=request.args1)}}">Overview</a></li>
   <li role="presentation" class={{="active" if tab=="assignments" else ""}}><a href="{{=URL('courses','course',args=request.args2)}}">Assignments</a></li>
   <li role="presentation" class={{="active" if tab=="resources" else ""}}><a href="{{=URL('courses','course',args=request.args3)}}">Resources</a></li>
-  <li role="presentation" class={{="active" if tab=="grades" else ""}}><a href="{{=URL('courses','course',args=request.args4)}}">Grades</a></li>
+  <li role="presentation" class={{="active" if tab=="threads" else ""}}><a href="{{=URL('courses','course',args=request.args4)}}">Threads</a></li>
+  <li role="presentation" class={{="active" if tab=="grades" else ""}}><a href="{{=URL('courses','course',args=request.args5)}}">Grades</a></li>
 </ul>
 <br>
 {{if registered:}}
@@ -51,6 +54,28 @@
 	<!-- Grades -->
 	{{elif tab=="grades":}}
 
+	<!-- Threads -->
+	{{elif tab=="threads":}}
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<td>S.no.</td>
+						<td>Title</td>
+						<td>Updated On</td>
+					</tr>
+				</thead>
+				<tbody>
+				{{for i,thread in enumerate(course_threads):}}
+					<tr>
+						<td>{{=i+1}}</td>
+						<td><a href="{{=URL('threads','thread',args=[thread.id])}}">{{=getValidThreadTitle(thread)}}</a></td>
+						<td>{{=thread.updated_at}}</td>
+					</tr>
+				{{pass}}
+				</tbody>
+			</table>
+		</div>
 	<!-- Overview -->
 	{{else:}}
 		<!-- Overview -->

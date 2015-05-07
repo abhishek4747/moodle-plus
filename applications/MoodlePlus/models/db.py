@@ -169,14 +169,6 @@ db.define_table(
 )
 
 db.define_table(
-    'threads',
-    Field('registered_course_id',db.registered_courses),
-    Field('user_id', db.users),
-    Field('created_at','datetime',default=datetime.now),
-    Field('post', 'string')
-)
-
-db.define_table(
     'events',
     Field('registered_course_id', db.registered_courses),
     Field('type_','integer'), # 0 assignment, 1 announcement
@@ -212,4 +204,22 @@ db.define_table(
     Field('name', 'string'),
     Field('file_', 'upload'),
     Field('created_at','datetime',default=datetime.now)
+)
+
+db.define_table(
+    'threads',
+    Field('user_id', db.users),
+    Field('registered_course_id', db.registered_courses),
+    Field('created_at', 'datetime', default=datetime.now),
+    Field('updated_at', 'datetime', default=datetime.now),
+    Field('title','string'),
+    Field('description', 'string'),
+migrate=True)
+
+db.define_table(
+    'comments',
+    Field('thread_id', db.threads),
+    Field('user_id', db.users),
+    Field('description', 'string'),
+    Field('created_at', 'datetime', default=datetime.now),
 )

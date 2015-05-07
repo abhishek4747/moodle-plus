@@ -1,6 +1,5 @@
 def index():
-	if auth.is_logged_in():
-		return courses_list()
+	return list()
 
 def list():
 	if auth.is_logged_in():
@@ -11,8 +10,8 @@ def list():
 def course():
 	if len(request.args)<1:
 		raise HTTP(404)
-	course_arg = str(request.args[0]).lower()
-	course = db(db.courses.code==course_arg).select()
+	course_code = str(request.args[0]).lower()
+	course = db(db.courses.code==course_code).select()
 	if len(course)>0:
 		course = course.first()
 	else:
@@ -21,7 +20,6 @@ def course():
 		tab = str(request.args[1])
 	except Exception, e:
 		tab = "overview"
-
 	try:
 		year = int(request.args[2])
 	except Exception, e:
@@ -36,15 +34,19 @@ def course():
 	previous = db((db.registered_courses.course_id==course.id)&(~((db.registered_courses.year_==year)&(db.registered_courses.semester==sem)))).select()
 	registered = db(db.registered_courses.course_id==course.id)(db.registered_courses.year_==year)(db.registered_courses.semester==sem).select()
 	assignments = None
+	course_threads = None
 	if len(registered)>0:
 		registered = registered.first()
 		if tab=="assignments":
 			assignments = db(db.events.registered_course_id==registered.id)(db.events.type_==0).select()
+		elif tab=="threads":
+			reg_course = registeredForCourse(course_code)
+			course_threads = db(db.threads.registered_course_id==reg_course).select()
 	else:
 		registered = None
 
 
-	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments)
+	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments, course_threads=course_threads)
 
 def download(): 
 	return response.download(request,db)
