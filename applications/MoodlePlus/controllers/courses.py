@@ -37,6 +37,7 @@ def course():
 	assignments = []
 	course_threads = []
 	grades = []
+	resources = []
 	if len(registered)>0:
 		registered = registered.first()
 		reg_course = registeredForCourse(course_code)
@@ -46,11 +47,13 @@ def course():
 			course_threads = db(db.threads.registered_course_id==reg_course).select()
 		elif tab=="grades":
 			grades = db(db.grades.registered_course_id==reg_course)(db.grades.user_id==auth.user.id).select()
+		elif tab=="resources":
+			resources = db(db.resources.registered_course_id==course.id).select()
 	else:
 		registered = None
 
 
-	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments, course_threads=course_threads, grades=grades)
+	return dict(course=course, year=year, sem=sem, previous=previous, registered=registered, tab=tab, assignments=assignments, course_threads=course_threads, grades=grades, resources=resources)
 
 def download(): 
 	return response.download(request,db)
@@ -61,6 +64,43 @@ def link():
 def delete():
 	db(db.submissions.file_==request.args[0]).delete()
 	session.flash = "Submission deleted successfully!!"
+	if request.env.http_referer:
+		redirect(request.env.http_referer)
+	else:
+		redirect('/')
+
+def delete_resource():
+	db(db.resources.file_==request.args[0]).delete()
+	session.flash = "Resource deleted successfully!!"
+	if request.env.http_referer:
+		redirect(request.env.http_referer)
+	else:
+		redirect('/')
+
+
+
+
+def new_resource():
+	if len(request.args)<1:
+		raise HTTP(404)
+	course_code = str(request.args[0]).lower()
+	course = db(db.courses.code==course_code).select()
+	if len(course)>0:
+		course = course.first()
+	else:
+		raise HTTP(404)
+
+	if auth.is_logged_in():
+		sub_form = FORM(
+			INPUT(_name="sub_name", _type="text"),
+			INPUT(_name="sub_file", _type="file")
+			)
+		reg_course = registeredForCourse(course_code)
+		if sub_form.accepts(request.vars, formname='sub_form') and sub_form.vars.sub_name.strip()!="":
+			sub = db.resources.file_.store(sub_form.vars.sub_file.file, sub_form.vars.sub_file.filename)
+			id = db.resources.insert(file_=sub,name=sub_form.vars.sub_name,is_public=auth.user.type_, user_id=auth.user_id, registered_course_id=reg_course )
+			if id>0:
+				session.flash = "Resource upload Successful!"
 	if request.env.http_referer:
 		redirect(request.env.http_referer)
 	else:
@@ -92,7 +132,7 @@ def assignment():
 			sub = db.submissions.file_.store(sub_form.vars.sub_file.file, sub_form.vars.sub_file.filename)
 			id = db.submissions.insert(file_=sub,name=sub_form.vars.sub_name,event_id=aid, user_id=auth.user_id)
 			if id>0:
-				response.flash = "Submission Successful!"
+				session.flash = "Submission Successful!"
 		
 		submissions = db(db.submissions.user_id==auth.user.id)(db.submissions.event_id==aid).select()
 

@@ -194,6 +194,8 @@ db.define_table(
 db.define_table(
     'resources',
     Field('registered_course_id',db.registered_courses),
+    Field('user_id',db.users),
+    Field('is_public','integer'),
     Field('name','string'),
     Field('file_','upload'),
     Field('created_at','datetime',default=datetime.now),
@@ -216,6 +218,14 @@ db.define_table(
     Field('updated_at', 'datetime', default=datetime.now),
     Field('title','string'),
     Field('description', 'string'),
+)
+
+db.define_table(
+    'notifications',
+    Field('user_id', db.users),
+    Field('description', 'string'),
+    Field('is_seen', 'integer', default=0),
+    Field('created_at', 'datetime', default=datetime.now),
 )
 
 db.define_table(

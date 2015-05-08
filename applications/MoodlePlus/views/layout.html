@@ -92,15 +92,15 @@
         {{if auth.is_logged_in():}}
           <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-              <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">Reports</a></li>
-              <li><a href="#">Analytics</a></li>
-              <li><a href="#">Export</a></li>
+              <li class="{{='active' if URL()=='/' or URL()=='/default' or URL()=='/index' or URL()=='/default/index' else ''}}"><a href="/default/index">Overview <span class="sr-only">(current)</span></a></li>
+              <li class="{{='active' if URL()=='/default/grades' else ''}}"><a href="/default/grades">Grades</a></li>
+              {{noti_count = db(db.notifications.user_id==auth.user.id)(db.notifications.is_seen==0).count()}}
+              <li class="{{='active' if URL()=='/default/notifications' else ''}}"><a href="/default/notifications">Notifications {{if 'noti_count' in globals() and noti_count>0:}} [{{=noti_count}}]{{pass}}</a></li>
             </ul>
             <ul class="nav nav-sidebar">
               <li><span class="sidebar_title">My Courses</span></li>
               {{for this_course in courses_list()["courses"]:}}
-                {{=LI(A(this_course.name,_href="/courses/course/"+this_course.code))}}
+                {{=LI(A(this_course.name,_href="/courses/course/"+this_course.code),_class="active" if len(request.args)>0 and request.args[0]==this_course.code else "")}}
               {{pass}}
             </ul>
             <!-- <ul class="nav nav-sidebar">

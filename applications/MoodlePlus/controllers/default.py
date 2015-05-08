@@ -17,11 +17,23 @@ def index():
     return auth.wiki()
     """
     response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    return dict(noti_count=4)
+
+def grades():
+    grades = db(db.grades.user_id==auth.user.id).select()
+    courses = []
+    for grade in grades:
+        courses.append(db(db.courses.id==grade.registered_course_id.course_id).select().first())
+    return dict(grades=grades, courses=courses)
+
+def notifications():
+    noti = db(db.notifications.user_id==auth.user.id).select(orderby=~db.notifications.created_at)
+    db(db.notifications.user_id==auth.user.id).update(is_seen=1)
+    return dict(notifications=noti)
 
 
 def logged_in():
-    return dict(success=auth.is_logged_in())
+    return dict(success=auth.is_logged_in(), user=auth.user)
 
 def logout():
     return dict(success=True, loggedout=auth.logout())

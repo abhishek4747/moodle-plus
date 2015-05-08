@@ -6,7 +6,7 @@
 	            <span class="[ glyphicon glyphicon-chevron-down ]"></span>
 	        </span>
 	        <ul class="dropdown-menu" role="menu">
-	            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li><!-- 
+	            <li role="presentation"><a role="menuitem" tabindex="-1" href="/threads/delete/{{=request.args[0]}}">Delete</a></li><!-- 
 	            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
 	            <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
 	            <li role="presentation" class="divider"></li>
@@ -19,7 +19,7 @@
 	        </ul>
 	    </div>
 	    <div class="panel-heading">
-	        <img class="[ img-circle pull-left ]" src="https://lh3.googleusercontent.com/-CxXg7_7ylq4/AAAAAAAAAAI/AAAAAAAAAQ8/LhCIKQC5Aq4/s46-c-k-no/photo.jpg" alt="Mouse0270" />
+	        <img class="[ img-circle pull-left ]" src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s46" alt="Mouse0270" />
 	        <h3>{{=getProfileLink(thread.user_id)}}&nbsp;&nbsp; : &nbsp;&nbsp;<strong>{{=getValidThreadTitle(thread)}}</strong></h3>
 	        <h5><span>Created at</span> - <span>{{=thread.created_at}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>Last updated at</span> - <span>{{=thread.updated_at}}</span> </h5>
 	    </div>
@@ -272,8 +272,8 @@ function add_comment(comment, username, time_readable){
 	    <sub>'+time_readable+'</sub>\
 	    '
 	}).appendTo('#thread_comments');
-
 }
+
 function render_comments(){
 	$('#thread_comments').html('');
 	for (var i = 0; i < comments.length; i++) {
@@ -286,6 +286,8 @@ function fetch_comments(){
 		url:'/threads/comments.json?thread_id='+thread_id,
 		success: function(data){
 			comments = data.comments;
+			comment_users = data.comment_users;
+			times_readable = data.times_readable;
 			render_comments();
 		},
 		error: function(){
