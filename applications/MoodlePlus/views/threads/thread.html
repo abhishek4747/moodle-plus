@@ -1,4 +1,5 @@
 {{extend 'layout.html'}}
+{{=A(' <--- back',_href='/courses/course/'+course.code+'/threads')}}
 <div class="[ col-xs-12 col-sm-12 ]">
 	<div class="[ panel panel-default ] panel-google-plus">
 	    <div class="dropdown">
@@ -19,7 +20,7 @@
 	        </ul>
 	    </div>
 	    <div class="panel-heading">
-	        <img class="[ img-circle pull-left ]" src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s46" alt="Mouse0270" />
+	        <img class="[ img-circle pull-left ]" src="/static/images/profile.png" alt="Mouse0270" />
 	        <h3>{{=getProfileLink(thread.user_id)}}&nbsp;&nbsp; : &nbsp;&nbsp;<strong>{{=getValidThreadTitle(thread)}}</strong></h3>
 	        <h5><span>Created at</span> - <span>{{=thread.created_at}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>Last updated at</span> - <span>{{=thread.updated_at}}</span> </h5>
 	    </div>
@@ -34,7 +35,7 @@
 	        <div class="input-placeholder">Add a comment...</div>
 	    </div>
 	    <div class="panel-google-plus-comment">
-	        <img class="img-circle" src="https://lh3.googleusercontent.com/uFp_tsTJboUY7kue5XAsGA=s46" alt="User Image" />
+	        <img class="img-circle" src="/static/images/profile.png" alt="User Image" />
 	        <div class="panel-google-plus-textarea">
 	            <textarea id="comment_text" rows="4"></textarea>
 	            <button type="submit" onclick="post_comment();" class="[ btn btn-success disabled ]">Post comment</button>

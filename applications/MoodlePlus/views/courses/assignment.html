@@ -1,5 +1,6 @@
 {{extend 'layout.html'}}
 {{#=BEAUTIFY(response._vars)}}
+{{=A(' <--- back',_href='/courses/course/'+course.code)}}
 {{=H1(assignment.name)}}
 {{=SPAN(XML(assignment.description))}}
 <script type="text/javascript">
