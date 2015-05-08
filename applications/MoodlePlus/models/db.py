@@ -135,7 +135,6 @@ db.define_table(
     Field('name','string'),
     Field('int_value','integer'),
     Field('string_value','string'),
-    primarykey=['user_id','name'],
 )
 
 db.define_table(

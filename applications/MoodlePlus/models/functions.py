@@ -39,7 +39,7 @@ def getValidThreadTitle(thread):
 
 def getProfileLink(user_id):
     user = db(db.users.id==user_id).select().first()
-    return XML('<a href="/Users/user/%d">%s</a>'%(user_id, (user.first_name+" "+user.last_name).title()))
+    return XML('<a href="/users/user/%d">%s</a>'%(user_id, (user.first_name+" "+user.last_name).title()))
 
 
 def timeHuman(date_time):

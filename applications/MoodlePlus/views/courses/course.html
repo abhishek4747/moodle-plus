@@ -25,6 +25,7 @@
 </ul>
 <br>
 {{if registered:}}
+	{{=H3(XML("Faculty:" + getProfileLink(registered.professor)))}}
 	<!-- Assignements -->
 	{{if tab=="assignments":}}
 		<div class="table-responsive">
@@ -157,7 +158,7 @@
 				{{pass}}
 				<tr>
 					<td>--</td>
-					<td><strong>Total so far</strong></td>
+					<td><strong>Total</strong></td>
 					<td><strong>{{=sc}}&nbsp;/&nbsp;{{=we}}</strong></td>
 					<td><strong>{{=we}}</strong></td>
 					<td><strong>{{=sc}}</strong></td>

@@ -1,5 +1,5 @@
-def courses_list():
-	user = auth.user
+def courses_list(user=None):
+	user = auth.user if not user else db(db.users.id==user).select().first()
 	if user.type_==1:
 		courses = db(db.registered_courses.professor==user.id).select(db.registered_courses.course_id)
 		courses = map(lambda x: x.course_id, courses)
