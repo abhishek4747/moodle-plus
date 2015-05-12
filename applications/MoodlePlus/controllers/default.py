@@ -120,5 +120,21 @@ Output params:
     success: (boolean) True if logout successful and False otherwise
 
 
+Url: /courses/list.json
+Input params:
+Output params:
+    current_year: (int)
+    current_sem: (int) 0 for summer, 1 break, 2 winter
+    courses: (List) list of courses
+    user: (dictionary) user details
+
+Url: /threads/new.json
+Input params:
+    title: (string) can't be empty
+    description: (string) can't be empty
+    course_code: (string) must be a registered courses
+Output params:
+    success: (bool) True or False depending on whether thread was posted
+    thread_id: (bool) id of new thread created
 
     """

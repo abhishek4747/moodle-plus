@@ -40,8 +40,8 @@ def course():
 	resources = []
 	if len(registered)>0:
 		registered = registered.first()
-		# if db(db.student_registrations.registered_course_id==registered.id)(db.student_registrations.student_id==auth.user.id).count():
-		# 	return "You are not enrolled in this course."
+		# if db(db.student_registrations.registered_course_id==registered.id)(db.student_registrations.student_id==auth.user.id).count()<1:
+		# 	redirect('/')
 		reg_course = registeredForCourse(course_code)
 		if tab=="assignments":
 			assignments = db(db.events.registered_course_id==registered.id)(db.events.type_==0).select()
